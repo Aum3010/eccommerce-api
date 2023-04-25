@@ -1,0 +1,127 @@
+swagger: "2.0"
+info:
+  description: "Test our DBMS project out"
+  version: "1.0.0"
+  title: "Ecommerce API"
+host: "localhost:3000"
+basePath: "/"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /users:
+    get:
+      description: "Returns a list of all users."
+      responses:
+        200:
+          description: "OK"
+    post:
+      description: "Creates a new user."
+      parameters:
+        - name: "user"
+          in: "body"
+          description: "User object to be created."
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "Created"
+        400:
+          description: "Bad Request"
+    put:
+      description: "Updates a user by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the user to be updated."
+          required: true
+          type: "integer"
+        - name: "user"
+          in: "body"
+          description: "User object to be updated."
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad Request"
+    delete:
+      description: "Deletes a user by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the user to be deleted."
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad Request"
+  /users/{id}:
+    get:
+      description: "Returns a user by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the user to be returned."
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad Request"
+  /products:
+    get:
+      description: "Returns a list of products filtered by name, category, and/or price range."
+      parameters:
+        - name: "name"
+          in: "query"
+          description: "Name of the product."
+          type: "string"
+        - name: "category"
+          in: "query"
+          description: "Category of the product."
+          type: "string"
+        - name: "minPrice"
+          in: "query"
+          description: "Minimum price of the product."
+          type: "number"
+        - name: "maxPrice"
+          in: "query"
+          description: "Maximum price of the product."
+          type: "number"
+      responses:
+        200:
+          description: "OK"
+  /swagger.json:
+    get:
+      description: "Returns the Swagger specification for this API."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "OK"
+definitions:
+  User:
+    type: "object"
+    required:
+      - "U_name"
+      - "U_pass"
+    properties:
+      U_id:
+        type: "integer"
+        description: "User ID."
+      U_name:
+        type: "string"
+        description: "User name."
+      U_pass:
+        type: "string"
+        description: "User password."
