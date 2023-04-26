@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "Built by Aum Pandya , Kartik Patel, Akshar Thakor , Pratham Modi"
+  description: "Built by Aum Pandya , Akshar Thakor , Kartik Patel , Pratham Modi"
   version: "1.0.0"
   title: "Ecommerce API"
 host: "localhost:3000"
