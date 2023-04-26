@@ -24,10 +24,12 @@ router.get('/:orderId/:productId', (req, res) => {
     }
   });
 });
-
 // CREATE a new OrderItem
 router.post('/', (req, res) => {
   const { orderId, productId, quantity } = req.body;
+  if (!orderId || !productId) {
+    return res.status(400).json({ message: 'Order ID and product ID are required.' });
+  }
   const sql = 'INSERT INTO OrderItems (O_id, P_id, OI_qty) VALUES (?, ?, ?)';
   db.query(sql, [orderId, productId, quantity], (err, result) => {
     if (err) throw err;
@@ -39,6 +41,9 @@ router.post('/', (req, res) => {
 router.put('/:orderId/:productId', (req, res) => {
   const { orderId, productId } = req.params;
   const { quantity } = req.body;
+  if (!quantity) {
+    return res.status(400).json({ message: 'Quantity is required.' });
+  }
   const sql = 'UPDATE OrderItems SET OI_qty = ? WHERE O_id = ? AND P_id = ?';
   db.query(sql, [quantity, orderId, productId], (err, result) => {
     if (err) throw err;

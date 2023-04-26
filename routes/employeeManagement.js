@@ -1,51 +1,53 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+let empId = 101;
 
-// Get all carts
-router.get('/carts', (req, res) => {
-  db.query('SELECT * FROM Cart', (err, result) => {
+// Get all employees
+router.get('/employees', (req, res) => {
+  db.query('SELECT * FROM Employee', (err, result) => {
     if (err) throw err;
     res.send(result);
   });
 });
 
-// Get a specific cart by ID
-router.get('/carts/:id', (req, res) => {
+// Get a specific employee by ID
+router.get('/employees/:id', (req, res) => {
   const id = req.params.id;
-  db.query('SELECT * FROM Cart WHERE cart_id = ?', id, (err, result) => {
+  db.query('SELECT * FROM Employee WHERE E_id = ?', id, (err, result) => {
     if (err) throw err;
     res.send(result);
   });
 });
 
-// Create a new cart
-router.post('/carts', (req, res) => {
-  const { user_id } = req.body;
-  const values = [user_id];
-  db.query('INSERT INTO Cart (user_id) VALUES (?)', values, (err, result) => {
+// Create a new employee
+router.post('/employees', (req, res) => {
+  const { name, password } = req.body;
+  const EmployeeId = empId++;
+  const values = [EmployeeId, name, password];
+  db.query('INSERT INTO Employee (E_id,E_name, E_pass) VALUES (?,?, ?)', values, (err, result) => {
     if (err) throw err;
-    res.send('New cart added to the database!');
+    res.send('New employee added to the database!');
   });
 });
 
-// Update an existing cart by ID
-router.put('/carts/:id', (req, res) => {
+// Update an existing employee by ID
+router.put('/employees/:id', (req, res) => {
   const id = req.params.id;
-  const { user_id } = req.body;
-  const values = [user_id, id];
-  db.query('UPDATE Cart SET user_id = ? WHERE cart_id = ?', values, (err, result) => {
+  const { name, password } = req.body;
+  const values = [name, password, id];
+  db.query('UPDATE Employee SET E_name = ?, E_pass = ? WHERE E_id = ?', values, (err, result) => {
     if (err) throw err;
-    res.send('Cart information updated successfully!');
+    res.send('Employee information updated successfully!');
   });
 });
 
-// Delete an existing cart by ID
-router.delete('/carts/:id', (req, res) => {
+// Delete an existing employee by ID
+router.delete('/employees/:id', (req, res) => {
   const id = req.params.id;
-  db.query('DELETE FROM Cart WHERE cart_id = ?', id, (err, result) => {
+  db.query('DELETE FROM Employee WHERE E_id = ?', id, (err, result) => {
     if (err) throw err;
-    res.send('Cart deleted from the database!');
+    res.send('Employee deleted from the database!');
   });
 });
 

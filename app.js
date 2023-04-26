@@ -56,9 +56,9 @@ async function main() {
   // Define routes
   app.use('/', authRoutes);
   app.use('/users', userRoutes);
-  app.use('/employee', employee);
-  app.use('/order', order);
-  app.use('/userorder', userOrder);
+  app.use('/', employee);
+  app.use('/', order);
+  app.use('/', userOrder);
   app.use('/orderItems', orderItems);
   app.use('/products', products);
  

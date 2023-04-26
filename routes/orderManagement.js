@@ -1,24 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const connection = require('../db');
+const db = require('../db');
+let nextOrderId = 101;
 
 // POST /orders
 router.post('/orders', (req, res) => {
-    const { amount, address } = req.body;
-    const sql = 'INSERT INTO Orders (O_Amount, O_Address) VALUES (?, ?)';
-    connection.query(sql, [amount, address], (err, result) => {
-      if (err) throw err;
-      res.status(201).json({
-        message: 'Order created successfully',
-        orderId: result.insertId
-      });
+  const { amount, address } = req.body;
+  const orderId = nextOrderId++; // generate random orderId between 1 and 250
+  const sql = 'INSERT INTO Orders (O_id, O_Amount, O_Address) VALUES (?, ?, ?)';
+  db.query(sql, [orderId, amount, address], (err, result) => {
+    if (err) throw err;
+    res.status(201).json({
+      message: 'Order created successfully',
+      orderId: result.insertId
     });
   });
+});
 
-  // GET /orders
+// GET /orders
 router.get('/orders', (req, res) => {
     const sql = 'SELECT * FROM Orders';
-    connection.query(sql, (err, result) => {
+    db.query(sql, (err, result) => {
       if (err) throw err;
       res.status(200).json(result);
     });
@@ -28,7 +30,7 @@ router.get('/orders', (req, res) => {
 router.get('/orders/:id', (req, res) => {
     const orderId = req.params.id;
     const sql = 'SELECT * FROM Orders WHERE O_id = ?';
-    connection.query(sql, [orderId], (err, result) => {
+    db.query(sql, [orderId], (err, result) => {
       if (err) throw err;
       if (result.length === 0) {
         res.status(404).json({ message: 'Order not found' });
@@ -43,7 +45,7 @@ router.put('/orders/:id', (req, res) => {
     const orderId = req.params.id;
     const { amount, address } = req.body;
     const sql = 'UPDATE Orders SET O_Amount = ?, O_Address = ? WHERE O_id = ?';
-    connection.query(sql, [amount, address, orderId], (err, result) => {
+    db.query(sql, [amount, address, orderId], (err, result) => {
       if (err) throw err;
       if (result.affectedRows === 0) {
         res.status(404).json({ message: 'Order not found' });
@@ -56,7 +58,7 @@ router.put('/orders/:id', (req, res) => {
 router.delete('/orders/:id', (req, res) => {
     const orderId = req.params.id;
     const sql = 'DELETE FROM Orders WHERE O_id = ?';
-    connection.query(sql, [orderId], (err, result) => {
+    db.query(sql, [orderId], (err, result) => {
       if (err) throw err;
       if (result.affectedRows === 0) {
         res.status(404).json({ message: 'Order not found' });

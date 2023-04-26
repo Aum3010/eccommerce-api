@@ -46,23 +46,30 @@ router.post('/', (req, res) => {
 });
 
 // Update user by ID
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { U_name,  U_pass } = req.body;
-    connection.query('UPDATE User SET U_name = ? , U_pass = ? WHERE U_id = ?', [U_name, U_pass, id], (err, results) => {
-        if (err) throw err;
-        res.json({ message: 'User updated successfully.', affectedRows: results.affectedRows });
-    });
-});
-
-// Delete user by ID
-router.delete('/:id', (req, res) => {
+    const { U_name, U_pass } = req.body;
+    try {
+      const result = await connection.promise().query('UPDATE User SET U_name = ? , U_pass = ? WHERE U_id = ?', [U_name, U_pass, id]);
+      res.json({ message: 'User updated successfully.', affectedRows: result[0].affectedRows });
+    } catch (error) {
+      console.log("updateUserById: ", error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
+  // Delete user by ID
+  router.delete('/:id', async (req, res) => {
     const { id } = req.params;
-    connection.query('DELETE FROM User WHERE U_id = ?', [id], (err, results) => {
-        if (err) throw err;
-        res.json({ message: 'User deleted successfully.', affectedRows: results.affectedRows });
-    });
-});
+    try {
+      const result = await connection.promise().query('DELETE FROM User WHERE U_id = ?', [id]);
+      res.json({ message: 'User deleted successfully.', affectedRows: result[0].affectedRows });
+    } catch (error) {
+      console.log("deleteUserById: ", error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
 
 
 // Search for products by name, category, price range

@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "Test our DBMS project out"
+  description: "Built by Aum Pandya , Kartik Patel, Akshar Thakor , Pratham Modi"
   version: "1.0.0"
   title: "Ecommerce API"
 host: "localhost:3000"
@@ -15,11 +15,15 @@ paths:
   /users:
     get:
       description: "Returns a list of all users."
+      tags:
+        - Users
       responses:
         200:
           description: "OK"
     post:
       description: "Creates a new user."
+      tags:
+        - Users
       parameters:
         - name: "user"
           in: "body"
@@ -32,8 +36,11 @@ paths:
           description: "Created"
         400:
           description: "Bad Request"
+  /users/{id}:
     put:
       description: "Updates a user by ID."
+      tags:
+        - Users
       parameters:
         - name: "id"
           in: "path"
@@ -53,6 +60,8 @@ paths:
           description: "Bad Request"
     delete:
       description: "Deletes a user by ID."
+      tags:
+        - Users
       parameters:
         - name: "id"
           in: "path"
@@ -64,9 +73,10 @@ paths:
           description: "OK"
         400:
           description: "Bad Request"
-  /users/{id}:
     get:
       description: "Returns a user by ID."
+      tags:
+        - Users
       parameters:
         - name: "id"
           in: "path"
@@ -81,6 +91,8 @@ paths:
   /products:
     get:
       description: "Returns a list of products filtered by name, category, and/or price range."
+      tags:
+        - Product Filtering
       parameters:
         - name: "name"
           in: "query"
@@ -101,8 +113,518 @@ paths:
       responses:
         200:
           description: "OK"
+  /employees:
+    get:
+      description: "Returns all employees"
+      tags:
+        - Employees
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "A list of employees"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Employee"
+    post:
+      description: "Creates a new employee"
+      tags:
+        - Employees
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Employee object to be created"
+          required: true
+          schema:
+            $ref: "#/definitions/EmployeeInput"
+      responses:
+        200:
+          description: "Employee created successfully"
+    
+  /employees/{id}:
+    put:
+      description: "Updates an employee by ID"
+      tags:
+        - Employees
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of employee to be updated"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Employee object to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/EmployeeInput"
+      responses:
+        200:
+          description: "Employee updated successfully"
+    delete:
+      description: "Deletes an employee by ID"
+      tags:
+        - Employees
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of employee to be deleted"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Employee deleted successfully"
+    get:
+      description: "Returns a specific employee by ID"
+      tags:
+        - Employees
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of employee to be retrieved"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Employee retrieved successfully"
+          schema:
+            $ref: "#/definitions/Employee"
+  /orders:
+    post:
+      summary: Create an order
+      tags:
+        - Orders
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                example: 10.99
+              address:
+                type: string
+                example: 123 Main St
+      responses:
+        '201':
+          description: Order created successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Order created successfully
+              orderId:
+                type: integer
+                example: 123
+    get:
+      summary: Get all orders
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: List of orders
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Order'
+  /orders/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Get an order by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          example: 123
+      responses:
+        '200':
+          description: Order details
+          schema:
+            $ref: '#/definitions/Order'
+        '404':
+          description: Order not found
+    put:
+      summary: Update an order by ID
+      tags:
+        - Orders
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          example: 123
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                example: 12.99
+              address:
+                type: string
+                example: 456 Main St
+      responses:
+        '200':
+          description: Order updated successfully
+        '404':
+          description: Order not found
+    delete:
+      summary: Delete an order by ID
+      tags:
+        - Orders
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          example: 123
+      responses:
+        '200':
+          description: Order deleted successfully
+        '404':
+          description: Order not found
+  /orders/{id}/status:
+    get:
+      tags:
+        - Orders
+      summary: Get the status of an order by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          example: 123
+      responses:
+        '200':
+          description: Order status and user details
+          schema:
+            type: object
+            properties:
+              orderId:
+                type: integer
+                example: 123
+              status:
+                type: string
+                example: Shipped
+              user:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 456
+                  name:
+                    type: string
+                    example: John Doe
+        '404':
+          description: Order not found
+        '500':
+          description: Unexpected error occurred
+  /users/{id}/orders:
+    get:
+      tags:
+        - Orders
+      summary: Get all orders for a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          example: 456
+      responses:
+        '200':
+          description: List of orders
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserOrder'
+  /user-orders:
+    get:
+      tags:
+        - User Orders
+      summary: Get all user-orders
+      responses:
+        200:
+          description: Returns a list of all user-orders.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserOrder'
+        500:
+          description: Error retrieving user-orders.
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Assign an order to a user
+      tags:
+        - User Orders 
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserOrderAssignRequest'
+      responses:
+        200:
+          description: Order assigned to user successfully.
+        500:
+          description: Error assigning order to user.
+          schema:
+            $ref: '#/definitions/Error'
+  /user-orders/remove/{orderId}/{userId}:
+    delete:
+      tags:
+        - User Orders
+      summary: Remove an order from a user
+      parameters:
+        - name: orderId
+          in: path
+          type: integer
+          required: true
+          description: ID of the order to remove.
+        - name: userId
+          in: path
+          type: integer
+          required: true
+          description: ID of the user from whom to remove the order.
+      responses:
+        200:
+          description: Order removed from user successfully.
+        500:
+          description: Error removing order from user.
+          schema:
+            $ref: '#/definitions/Error'
+  /user-orders/{orderId}/{userId}:
+    put:
+      tags:
+        - User Orders
+      summary: Update an order's user assignment
+      parameters:
+        - name: orderId
+          in: path
+          type: integer
+          required: true
+          description: ID of the order to update.
+        - name: userId
+          in: path
+          type: integer
+          required: true
+          description: ID of the user to assign the order to.
+      responses:
+        200:
+          description: Order assignment updated successfully.
+        500:
+          description: Error updating order assignment.
+          schema:
+            $ref: '#/definitions/Error'
+  /orderItems:
+    get:
+      tags:
+        - Order Items
+      description: "Returns all order items."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "A list of order items."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/OrderItem"
+    post:
+      tags:
+        - Order Items
+      description: "Creates a new order item."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "OrderItem"
+          in: "body"
+          description: "The order item to create."
+          required: true
+          schema:
+            $ref: "#/definitions/OrderItem"
+      responses:
+        201:
+          description: "The newly created order item."
+          schema:
+            $ref: "#/definitions/OrderItem"
+  /orderItems/{orderId}/{productId}:
+    get:
+      tags:
+        - Order Items
+      description: "Returns a specific order item by order ID and product ID."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "orderId"
+          in: "path"
+          description: "The ID of the order."
+          required: true
+          type: "integer"
+        - name: "productId"
+          in: "path"
+          description: "The ID of the product."
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "The order item."
+          schema:
+            $ref: "#/definitions/OrderItem"
+        404:
+          description: "Order item not found."
+    put:
+      tags:
+        - Order Items
+      description: "Updates an existing order item."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "orderId"
+          in: "path"
+          description: "The ID of the order."
+          required: true
+          type: "integer"
+        - name: "productId"
+          in: "path"
+          description: "The ID of the product."
+          required: true
+          type: "integer"
+        - name: "OrderItem"
+          in: "body"
+          description: "The order item to update."
+          required: true
+          schema:
+            $ref: "#/definitions/OrderItem"
+      responses:
+        200:
+          description: "The updated order item."
+          schema:
+            $ref: "#/definitions/OrderItem"
+        404:
+          description: "Order item not found."
+    delete:
+      tags:
+        - Order Items
+      description: "Deletes an existing order item."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "orderId"
+          in: "path"
+          description: "The ID of the order."
+          required: true
+          type: "integer"
+        - name: "productId"
+          in: "path"
+          description: "The ID of the product."
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Order item deleted."
+        404:
+          description: "Order item not found."
+  /carts:
+    get:
+      tags:
+        - Carts
+      summary: Get all carts
+      responses:
+        200:
+          description: OK
+    post:
+      tags:
+        - Carts
+      summary: Create a new cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+              required:
+                - user_id
+      responses:
+        200:
+          description: OK
+  /carts/{id}:
+    get:
+      summary: Get a specific cart by ID
+      tags:
+        - Carts 
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The ID of the cart to retrieve
+      responses:
+        200:
+          description: OK
+    put:
+      tags:
+        - Carts
+      summary: Update an existing cart by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The ID of the cart to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+              required:
+                - user_id
+      responses:
+        200:
+          description: OK
+    delete:
+      tags:
+        - Carts
+      summary: Delete an existing cart by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The ID of the cart to delete
+      responses:
+        200:
+          description: OK
   /swagger.json:
     get:
+      tags:
+        - Swagger
       description: "Returns the Swagger specification for this API."
       produces:
         - "application/json"
@@ -125,3 +647,67 @@ definitions:
       U_pass:
         type: "string"
         description: "User password."
+  Employee:
+    type: "object"
+    required:
+      - "E_id"
+      - "E_name"
+      - "E_pass"
+    properties:
+      E_id:
+        type: "integer"
+      E_name:
+        type: "string"
+      E_pass:
+        type: "string"
+  Cart:
+    type: object
+    properties:
+      cart_id:
+        type: integer
+      user_id:
+        type: integer
+  UserOrder:
+    type: object
+    properties:
+      O_id:
+        type: integer
+      U_id:
+        type: integer
+    required:
+      - O_id
+      - U_id
+  OrderItem:
+    type: object
+    properties:
+      O_id:
+        type: integer
+        description: The ID of the order
+      P_id:
+        type: integer
+        description: The ID of the product
+      OI_qty:
+        type: integer
+        description: The quantity of the product in the order
+    required:
+      - O_id
+      - P_id
+      - OI_qty
+  UserOrderManagement:
+    type: object
+    properties:
+      orderId:
+        type: integer
+      userId:
+        type: integer
+    required:
+      - orderId
+      - userId
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+      error:
+        type: string
+  
